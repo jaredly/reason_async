@@ -1,0 +1,14 @@
+
+(jbuild_version 1)
+
+(executable (
+  (name test)
+  (libraries (lib))
+  (preprocess (pps (ppx_tools_versioned.metaquot_403)))
+))
+
+(alias (
+  (name runtest)
+  (deps (test.exe))
+  (action (run ${<}))
+))

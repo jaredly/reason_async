@@ -1,0 +1,16 @@
+opam-version: "2.0"
+name: "ppx_async"
+version: "1.0.0"
+maintainer: "Jared Forsyth <jared@jaredforsyth.com>"
+authors: ["Jared Forsyth <jared@jaredforsyth.com>"]
+homepage: ""
+bug-reports: ""
+dev-repo: ""
+license: ["ISC"]
+tags: []
+build: [["jbuilder" "build" "-p" name "-j" jobs]]
+build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
+depends: [
+  "jbuilder" {build}
+  "reason" {>= "2.0.0"} {build}
+]

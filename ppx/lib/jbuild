@@ -1,0 +1,8 @@
+
+(jbuild_version 1)
+
+(library (
+  (name lib)
+    (libraries (compiler-libs.common unix str ocaml-migrate-parsetree))
+  (preprocess (pps (ppx_tools_versioned.metaquot_403)))
+  ))

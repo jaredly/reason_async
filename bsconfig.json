@@ -1,0 +1,5 @@
+{
+  "name" : "reason_async",
+  "sources": "src",
+  "bsc-flags": ["-w", "-30"],
+}

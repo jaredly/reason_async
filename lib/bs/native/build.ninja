@@ -1,0 +1,45 @@
+bs_package_flags = -bs-package-name reason_async
+src_root_dir = /Users/jared/clone/experiments/ppx_async
+bsc = /Users/jared/clone/experiments/ppx_async/node_modules/bs-platform/bin/bsc.exe
+bsb_helper = /Users/jared/clone/experiments/ppx_async/node_modules/bs-platform/bin/bsb_helper.exe
+bsc_flags = -nostdlib -I '/Users/jared/clone/experiments/ppx_async/node_modules/bs-platform/lib/ocaml/native' -w +40 -w -30 -bs-super-errors -no-alias-deps -color always
+ppx_flags = -ppx ppx_metaquot_403
+bs_package_includes = 
+bs_package_dev_includes = 
+refmt = /Users/jared/clone/experiments/ppx_async/node_modules/bs-platform/bin/refmt.exe
+reason_react_jsx = 
+refmt_flags = --print binary
+namespace = 
+bs_super_errors = 
+external_deps_for_linking = 
+ocamlc = ocamlc
+ocamlopt = ocamlopt
+ocamlfind = ocamlfind
+ocamlfind_dependencies = -package ocaml-migrate-parsetree
+bsb_dir_group = 0
+bsc_lib_includes = -I ./src -I ./ppx
+rule build_ast_and_module_sets_from_re_gen_simple
+  command = ${bsc} -pp "${refmt} ${refmt_flags}" ${reason_react_jsx}  ${ppx_flags} ${bs_super_errors} ${warnings} ${bsc_flags} -c -o ${out} -bs-syntax-only -bs-simple-binary-ast -bs-binary-ast -impl ${in}
+  description = [34mBuilding[39m [2m${out}[22m
+build ./ppx/Lib.mlast : build_ast_and_module_sets_from_re_gen_simple $src_root_dir/./ppx/Lib.re
+rule build_deps_native
+  command = ${bsb_helper} -g ${bsb_dir_group} -MD-native ${in}
+  description = [34mBuilding[39m [2m${out}[22m
+build ./ppx/Lib.mlast.d : build_deps_native ./ppx/Lib.mlast
+rule build_cmx_cmi_native
+  command = ${ocamlfind} ${ocamlopt} ${bs_super_errors_ocamlfind} ${bs_package_includes} ${bsc_lib_includes} ${ocamlfind_dependencies} ${bsc_extra_includes} -o ${out} ${warnings} -g -c -intf-suffix .mliast_simple -impl ${in}_simple ${postbuild}
+  depfile = ${in}.d
+  description = [34mBuilding[39m [2m${out}[22m
+build ./ppx/Lib.cmx |  ./ppx/Lib.cmi : build_cmx_cmi_native ./ppx/Lib.mlast
+  bs_package_flags = $bs_package_flags  -bs-package-output commonjs:lib/js/./ppx
+build ./ppx/ppx_async.mlast : build_ast_and_module_sets_from_re_gen_simple $src_root_dir/./ppx/ppx_async.re
+build ./ppx/ppx_async.mlast.d : build_deps_native ./ppx/ppx_async.mlast
+build ./ppx/ppx_async.cmx |  ./ppx/ppx_async.cmi : build_cmx_cmi_native ./ppx/ppx_async.mlast
+  bs_package_flags = $bs_package_flags  -bs-package-output commonjs:lib/js/./ppx
+rule linking_native
+  command = ${bsb_helper} -bs-main ${main_module} ${bs_super_errors} ${static_libraries} ${ocamlfind_dependencies} ${external_deps_for_linking} ${in} -link-native ${out}
+  description = [34mBuilding[39m [2m${out}[22m
+build ppx_async.native : linking_native  ./ppx/ppx_async.mlast ./ppx/Lib.mlast |  ./ppx/ppx_async.cmi ./ppx/Lib.cmi ./ppx/ppx_async.cmx ./ppx/Lib.cmx
+  main_module = Ppx_async
+  static_libraries = 
+build build.ninja : phony  ||  ./ppx/ppx_async.mlast.d ./ppx/Lib.mlast.d

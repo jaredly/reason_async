@@ -1,0 +1,10 @@
+# ninja log v5
+1	45	0	ppx/ppx_async.mlast	c9f7356d4dca821
+0	47	0	ppx/Lib.mlast	45f841e334e37321
+45	51	0	ppx/ppx_async.mlast.d	9461d8b4bee6c6ee
+47	53	0	ppx/Lib.mlast.d	7df5b8e71524873b
+0	67	0	ppx/Lib.cmx	7adc097f04701ec6
+0	67	0	ppx/Lib.cmi	7adc097f04701ec6
+67	132	0	ppx/ppx_async.cmx	9581dc3d01290c86
+67	132	0	ppx/ppx_async.cmi	9581dc3d01290c86
+132	716	0	ppx_async.native	236b7c2906b06de2

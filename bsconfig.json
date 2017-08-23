@@ -1,5 +1,18 @@
 {
-  "name" : "reason_async",
-  "sources": "src",
-  "bsc-flags": ["-w", "-30"],
+  "name": "reason_async",
+  "version": "0.1.0",
+  "sources": [
+    {"dir": "./src", "kind": "js"},
+    {"dir": "./ppx", "kind": "native"}
+  ],
+  "entries": [
+    {"kind": "native", "main": "Ppx_async"}
+  ],
+  "bsc-flags": ["-w", "+40", "-w", "-30", "-bs-super-errors"],
+  "ocamlfind-dependencies": [
+    "ocaml-migrate-parsetree"
+  ],
+  "ppx-flags": [
+    "ppx_metaquot_403"
+  ]
 }

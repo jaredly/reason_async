@@ -1,7 +1,0 @@
-
-(jbuild_version 1)
-
-(executable (
-  (name ppx_async)
-  (public_name ppx_async)
-  (libraries (lib))))

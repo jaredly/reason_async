@@ -1,6 +1,7 @@
 {
   "name": "reason_async",
   "version": "0.1.0",
+  "refmt": 3,
   "sources": [
     {"dir": "./src", "kind": "js"},
     {"dir": "./ppx", "kind": "native"}

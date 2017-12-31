@@ -1,5 +1,7 @@
 # Async/await for Reason/OCaml!
 
+[Clone the example repo](https://github.com/jaredly/reason_async_example) to get started quickly.
+
 ## Example usage
 
 With promises

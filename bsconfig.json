@@ -2,15 +2,6 @@
   "name": "reason_async",
   "version": "0.1.0",
   "refmt": 3,
-  "sources": [
-    {"dir": "./src", "kind": "js"},
-    {"dir": "./ppx", "kind": "native"}
-  ],
-  "entries": [
-    {"backend": "native", "main-module": "Ppx_async"},
-    {"backend": "js", "main-module": "Reason_async"},
-  ],
-  "ocaml-dependencies": ["compiler-libs"],
-  "bsc-flags": ["-w", "+40", "-w", "-30", "-bs-super-errors"],
-  "ppx-flags": []
+  "sources": "./src",
+  "bsc-flags": ["-w", "+40", "-w", "-30", "-bs-super-errors"]
 }

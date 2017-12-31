@@ -58,7 +58,7 @@ let mapper = (_argv) =>
     expr: (mapper, expr) =>
       switch expr.pexp_desc {
       | Pexp_sequence(
-          {pexp_desc: Pexp_extension(({txt: "map" | "await_wrap"}, contents)), pexp_loc},
+          {pexp_desc: Pexp_extension(({txt: "map" | "awaitWrap"}, contents)), pexp_loc},
           next
         )
       | Pexp_sequence(
@@ -101,7 +101,7 @@ let mapper = (_argv) =>
           Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
           Parsetree.pexp_attributes: []
         }
-      | Pexp_extension(({txt: "map" | "await_wrap"}, contents)) =>
+      | Pexp_extension(({txt: "map" | "awaitWrap"}, contents)) =>
         let (pat, expr) = process_let(contents, expr.pexp_loc);
         {
           Parsetree.pexp_desc:

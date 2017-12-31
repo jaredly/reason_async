@@ -89,7 +89,7 @@ let module C: MonadThing = Continuation;
 
 module NodeContinuation = {
   open Js.Result;
-  type t(('a, 'b)) = (Js.Result.t('a, 'b) => unit) => unit;
+  type t('a, 'b) = (Js.Result.t('a, 'b) => unit) => unit;
   let return = (x, fin) => fin(Ok(x));
   let map = (work, ~f as use, fin) => work((result) => fin(Ok(use(result))));
   let bind = (work, ~f as use, fin) => work((result) => (use(result))(fin));
@@ -148,7 +148,7 @@ module NodeContinuation = {
   };
 };
 
-let module N: MonadThing = NodeContinuation;
+/* let module N: MonadThing = NodeContinuation; */
 
 module Option = {
   type t('a) = option('a);

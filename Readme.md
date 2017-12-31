@@ -20,7 +20,7 @@ let doSomething = () => {
 ## Installation / setup
 
 - `yarn add reason_async` (or npm)
-- add `reason_async` to your dependencies in `bsconfig.json`
+- add `reason_async` to your bs-dependencies in `bsconfig.json`
 - add `reason_async` to your `ppx-flags` in `bsconfig.json`
 
 Example `bsconfig.json`:
@@ -30,7 +30,7 @@ Example `bsconfig.json`:
   "name": "myapp",
   "refmt": 3,
   "sources": "./src",
-  "dependencies": ["reason_async"],
+  "bs-dependencies": ["reason_async"],
   "ppx-flags": ["reason_async"]
 }
 ```

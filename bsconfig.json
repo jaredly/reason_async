@@ -12,7 +12,5 @@
   ],
   "ocaml-dependencies": ["compiler-libs"],
   "bsc-flags": ["-w", "+40", "-w", "-30", "-bs-super-errors"],
-  "ppx-flags": [
-    "../../tools/ppx_tools/ppx_metaquot_402.sh"
-  ]
+  "ppx-flags": []
 }

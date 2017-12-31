@@ -19,6 +19,8 @@ let doSomething = () => {
 
 ## Installation / setup
 
+NOTE: You currently need to be using `bsb-native` in your project in order for weird bugs not to happen on recompilation. You'll want `"bs-platform": "git+https://github.com/bsansouci/bsb-native"` in your package.json.
+
 - `yarn add reason_async` (or npm)
 - add `reason_async` to your bs-dependencies in `bsconfig.json`
 - add `reason_async` to your `ppx-flags` in `bsconfig.json`

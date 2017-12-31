@@ -1,1 +1,1 @@
-`dirname $(realpath $0)`/lib/bs/native/ppx_async.native $@
+`dirname $(realpath $0)`/ppx/lib/bs/native/ppx_async.native $@

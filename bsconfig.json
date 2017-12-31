@@ -7,13 +7,12 @@
     {"dir": "./ppx", "kind": "native"}
   ],
   "entries": [
-    {"kind": "native", "main": "Ppx_async"}
+    {"backend": "native", "main-module": "Ppx_async"},
+    {"backend": "js", "main-module": "Reason_async"},
   ],
+  "ocaml-dependencies": ["compiler-libs"],
   "bsc-flags": ["-w", "+40", "-w", "-30", "-bs-super-errors"],
-  "ocamlfind-dependencies": [
-    "ocaml-migrate-parsetree"
-  ],
   "ppx-flags": [
-    "ppx_metaquot_403"
+    "../../tools/ppx_tools/ppx_metaquot_402.sh"
   ]
 }

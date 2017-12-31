@@ -1,7 +1,5 @@
 [@ocaml.ppx.context {cookies: []}];
 
-open Migrate_parsetree.Ast_403;
-
 let fail = (loc, txt) => raise(Location.Error(Location.error(~loc, txt)));
 
 let rec process_bindings = (bindings) =>
@@ -14,24 +12,23 @@ let rec process_bindings = (bindings) =>
       (
         Ast_helper.Pat.tuple([binding.pvb_pat, pattern]),
         {
-          Ast_403.Parsetree.pexp_desc:
+          Parsetree.pexp_desc:
             [@implicit_arity]
-            Ast_403.Parsetree.Pexp_apply(
+            Parsetree.Pexp_apply(
               {
-                Ast_403.Parsetree.pexp_desc:
-                  Ast_403.Parsetree.Pexp_ident({
-                    Ast_403.Asttypes.txt:
-                      [@implicit_arity]
-                      Ast_403.Longident.Ldot(Ast_403.Longident.Lident("Let_syntax"), "join2"),
-                    Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                Parsetree.pexp_desc:
+                  Parsetree.Pexp_ident({
+                    Asttypes.txt:
+                      [@implicit_arity] Longident.Ldot(Longident.Lident("Let_syntax"), "join2"),
+                    Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                   }),
-                Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                Ast_403.Parsetree.pexp_attributes: []
+                Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                Parsetree.pexp_attributes: []
               },
-              [(Ast_403.Asttypes.Nolabel, binding.pvb_expr), (Ast_403.Asttypes.Nolabel, expr)]
+              [("", binding.pvb_expr), ("", expr)]
             ),
-          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-          Ast_403.Parsetree.pexp_attributes: []
+          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+          Parsetree.pexp_attributes: []
         }
       )
     }
@@ -55,7 +52,7 @@ let getExpr = (contents, loc) =>
     }
   );
 
-let mapper =
+let mapper = (_argv) =>
   Parsetree.{
     ...Ast_mapper.default_mapper,
     expr: (mapper, expr) =>
@@ -74,92 +71,85 @@ let mapper =
         ) =>
         let (pat, expr) = process_let(contents, pexp_loc);
         {
-          Ast_403.Parsetree.pexp_desc:
+          Parsetree.pexp_desc:
             [@implicit_arity]
-            Ast_403.Parsetree.Pexp_apply(
+            Parsetree.Pexp_apply(
               {
-                Ast_403.Parsetree.pexp_desc:
-                  Ast_403.Parsetree.Pexp_ident({
-                    Ast_403.Asttypes.txt:
-                      [@implicit_arity]
-                      Ast_403.Longident.Ldot(Ast_403.Longident.Lident("Let_syntax"), "map"),
-                    Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                Parsetree.pexp_desc:
+                  Parsetree.Pexp_ident({
+                    Asttypes.txt:
+                      [@implicit_arity] Longident.Ldot(Longident.Lident("Let_syntax"), "map"),
+                    Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                   }),
-                Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                Ast_403.Parsetree.pexp_attributes: []
+                Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                Parsetree.pexp_attributes: []
               },
               [
-                (Ast_403.Asttypes.Nolabel, expr),
+                ("", expr),
                 (
-                  Ast_403.Asttypes.Labelled("f"),
+                  "f",
                   {
-                    Ast_403.Parsetree.pexp_desc:
+                    Parsetree.pexp_desc:
                       [@implicit_arity]
-                      Ast_403.Parsetree.Pexp_fun(
-                        Ast_403.Asttypes.Nolabel,
-                        None,
-                        pat,
-                        mapper.expr(mapper, next)
-                      ),
-                    Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                    Ast_403.Parsetree.pexp_attributes: []
+                      Parsetree.Pexp_fun("", None, pat, mapper.expr(mapper, next)),
+                    Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                    Parsetree.pexp_attributes: []
                   }
                 )
               ]
             ),
-          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-          Ast_403.Parsetree.pexp_attributes: []
+          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+          Parsetree.pexp_attributes: []
         }
       | Pexp_extension(({txt: "map" | "await_wrap"}, contents)) =>
         let (pat, expr) = process_let(contents, expr.pexp_loc);
         {
-          Ast_403.Parsetree.pexp_desc:
+          Parsetree.pexp_desc:
             [@implicit_arity]
-            Ast_403.Parsetree.Pexp_apply(
+            Parsetree.Pexp_apply(
               {
-                Ast_403.Parsetree.pexp_desc:
-                  Ast_403.Parsetree.Pexp_ident({
-                    Ast_403.Asttypes.txt:
-                      [@implicit_arity]
-                      Ast_403.Longident.Ldot(Ast_403.Longident.Lident("Let_syntax"), "map"),
-                    Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                Parsetree.pexp_desc:
+                  Parsetree.Pexp_ident({
+                    Asttypes.txt:
+                      [@implicit_arity] Longident.Ldot(Longident.Lident("Let_syntax"), "map"),
+                    Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                   }),
-                Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                Ast_403.Parsetree.pexp_attributes: []
+                Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                Parsetree.pexp_attributes: []
               },
               [
-                (Ast_403.Asttypes.Nolabel, expr),
+                ("", expr),
                 (
-                  Ast_403.Asttypes.Labelled("f"),
+                  "f",
                   {
-                    Ast_403.Parsetree.pexp_desc:
+                    Parsetree.pexp_desc:
                       [@implicit_arity]
-                      Ast_403.Parsetree.Pexp_fun(
-                        Ast_403.Asttypes.Nolabel,
+                      Parsetree.Pexp_fun(
+                        "",
                         None,
                         pat,
                         {
-                          Ast_403.Parsetree.pexp_desc:
+                          Parsetree.pexp_desc:
                             [@implicit_arity]
-                            Ast_403.Parsetree.Pexp_construct(
+                            Parsetree.Pexp_construct(
                               {
-                                Ast_403.Asttypes.txt: Ast_403.Longident.Lident("()"),
-                                Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                                Asttypes.txt: Longident.Lident("()"),
+                                Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                               },
                               None
                             ),
-                          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                          Ast_403.Parsetree.pexp_attributes: []
+                          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                          Parsetree.pexp_attributes: []
                         }
                       ),
-                    Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                    Ast_403.Parsetree.pexp_attributes: []
+                    Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                    Parsetree.pexp_attributes: []
                   }
                 )
               ]
             ),
-          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-          Ast_403.Parsetree.pexp_attributes: []
+          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+          Parsetree.pexp_attributes: []
         }
       | Pexp_sequence(
           {pexp_desc: Pexp_extension(({txt: "bind" | "await"}, contents)), pexp_loc},
@@ -167,92 +157,85 @@ let mapper =
         ) =>
         let (pat, expr) = process_let(contents, pexp_loc);
         {
-          Ast_403.Parsetree.pexp_desc:
+          Parsetree.pexp_desc:
             [@implicit_arity]
-            Ast_403.Parsetree.Pexp_apply(
+            Parsetree.Pexp_apply(
               {
-                Ast_403.Parsetree.pexp_desc:
-                  Ast_403.Parsetree.Pexp_ident({
-                    Ast_403.Asttypes.txt:
-                      [@implicit_arity]
-                      Ast_403.Longident.Ldot(Ast_403.Longident.Lident("Let_syntax"), "bind"),
-                    Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                Parsetree.pexp_desc:
+                  Parsetree.Pexp_ident({
+                    Asttypes.txt:
+                      [@implicit_arity] Longident.Ldot(Longident.Lident("Let_syntax"), "bind"),
+                    Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                   }),
-                Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                Ast_403.Parsetree.pexp_attributes: []
+                Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                Parsetree.pexp_attributes: []
               },
               [
-                (Ast_403.Asttypes.Nolabel, expr),
+                ("", expr),
                 (
-                  Ast_403.Asttypes.Labelled("f"),
+                  "f",
                   {
-                    Ast_403.Parsetree.pexp_desc:
+                    Parsetree.pexp_desc:
                       [@implicit_arity]
-                      Ast_403.Parsetree.Pexp_fun(
-                        Ast_403.Asttypes.Nolabel,
-                        None,
-                        pat,
-                        mapper.expr(mapper, next)
-                      ),
-                    Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                    Ast_403.Parsetree.pexp_attributes: []
+                      Parsetree.Pexp_fun("", None, pat, mapper.expr(mapper, next)),
+                    Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                    Parsetree.pexp_attributes: []
                   }
                 )
               ]
             ),
-          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-          Ast_403.Parsetree.pexp_attributes: []
+          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+          Parsetree.pexp_attributes: []
         }
       | Pexp_extension(({txt: "bind" | "await"}, contents)) =>
         let (pat, expr) = process_let(contents, expr.pexp_loc);
         {
-          Ast_403.Parsetree.pexp_desc:
+          Parsetree.pexp_desc:
             [@implicit_arity]
-            Ast_403.Parsetree.Pexp_apply(
+            Parsetree.Pexp_apply(
               {
-                Ast_403.Parsetree.pexp_desc:
-                  Ast_403.Parsetree.Pexp_ident({
-                    Ast_403.Asttypes.txt:
-                      [@implicit_arity]
-                      Ast_403.Longident.Ldot(Ast_403.Longident.Lident("Let_syntax"), "bind"),
-                    Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                Parsetree.pexp_desc:
+                  Parsetree.Pexp_ident({
+                    Asttypes.txt:
+                      [@implicit_arity] Longident.Ldot(Longident.Lident("Let_syntax"), "bind"),
+                    Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                   }),
-                Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                Ast_403.Parsetree.pexp_attributes: []
+                Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                Parsetree.pexp_attributes: []
               },
               [
-                (Ast_403.Asttypes.Nolabel, expr),
+                ("", expr),
                 (
-                  Ast_403.Asttypes.Labelled("f"),
+                  "f",
                   {
-                    Ast_403.Parsetree.pexp_desc:
+                    Parsetree.pexp_desc:
                       [@implicit_arity]
-                      Ast_403.Parsetree.Pexp_fun(
-                        Ast_403.Asttypes.Nolabel,
+                      Parsetree.Pexp_fun(
+                        "",
                         None,
                         pat,
                         {
-                          Ast_403.Parsetree.pexp_desc:
+                          Parsetree.pexp_desc:
                             [@implicit_arity]
-                            Ast_403.Parsetree.Pexp_construct(
+                            Parsetree.Pexp_construct(
                               {
-                                Ast_403.Asttypes.txt: Ast_403.Longident.Lident("()"),
-                                Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                                Asttypes.txt: Longident.Lident("()"),
+                                Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                               },
                               None
                             ),
-                          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                          Ast_403.Parsetree.pexp_attributes: []
+                          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                          Parsetree.pexp_attributes: []
                         }
                       ),
-                    Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                    Ast_403.Parsetree.pexp_attributes: []
+                    Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                    Parsetree.pexp_attributes: []
                   }
                 )
               ]
             ),
-          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-          Ast_403.Parsetree.pexp_attributes: []
+          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+          Parsetree.pexp_attributes: []
         }
       | Pexp_sequence(
           {pexp_desc: Pexp_extension(({txt: "consume"}, contents)), pexp_loc, pexp_attributes},
@@ -263,67 +246,59 @@ let mapper =
           switch pexp_attributes {
           | [({txt: "then"}, contents)] => getExpr(contents, pexp_loc)
           | _ => {
-              Ast_403.Parsetree.pexp_desc:
+              Parsetree.pexp_desc:
                 [@implicit_arity]
-                Ast_403.Parsetree.Pexp_construct(
+                Parsetree.Pexp_construct(
                   {
-                    Ast_403.Asttypes.txt: Ast_403.Longident.Lident("()"),
-                    Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                    Asttypes.txt: Longident.Lident("()"),
+                    Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                   },
                   None
                 ),
-              Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-              Ast_403.Parsetree.pexp_attributes: []
+              Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+              Parsetree.pexp_attributes: []
             }
           };
         {
-          Ast_403.Parsetree.pexp_desc:
+          Parsetree.pexp_desc:
             [@implicit_arity]
-            Ast_403.Parsetree.Pexp_sequence(
+            Parsetree.Pexp_sequence(
               {
-                Ast_403.Parsetree.pexp_desc:
+                Parsetree.pexp_desc:
                   [@implicit_arity]
-                  Ast_403.Parsetree.Pexp_apply(
+                  Parsetree.Pexp_apply(
                     {
-                      Ast_403.Parsetree.pexp_desc:
-                        Ast_403.Parsetree.Pexp_ident({
-                          Ast_403.Asttypes.txt:
+                      Parsetree.pexp_desc:
+                        Parsetree.Pexp_ident({
+                          Asttypes.txt:
                             [@implicit_arity]
-                            Ast_403.Longident.Ldot(
-                              Ast_403.Longident.Lident("Let_syntax"),
-                              "consume"
-                            ),
-                          Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                            Longident.Ldot(Longident.Lident("Let_syntax"), "consume"),
+                          Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                         }),
-                      Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                      Ast_403.Parsetree.pexp_attributes: []
+                      Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                      Parsetree.pexp_attributes: []
                     },
                     [
-                      (Ast_403.Asttypes.Nolabel, expr),
+                      ("", expr),
                       (
-                        Ast_403.Asttypes.Labelled("f"),
+                        "f",
                         {
-                          Ast_403.Parsetree.pexp_desc:
+                          Parsetree.pexp_desc:
                             [@implicit_arity]
-                            Ast_403.Parsetree.Pexp_fun(
-                              Ast_403.Asttypes.Nolabel,
-                              None,
-                              pat,
-                              mapper.expr(mapper, next)
-                            ),
-                          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                          Ast_403.Parsetree.pexp_attributes: []
+                            Parsetree.Pexp_fun("", None, pat, mapper.expr(mapper, next)),
+                          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                          Parsetree.pexp_attributes: []
                         }
                       )
                     ]
                   ),
-                Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                Ast_403.Parsetree.pexp_attributes: []
+                Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                Parsetree.pexp_attributes: []
               },
               thenn
             ),
-          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-          Ast_403.Parsetree.pexp_attributes: []
+          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+          Parsetree.pexp_attributes: []
         }
       | Pexp_extension(({txt: "consume"}, contents)) =>
         let (pat, expr) = process_let(contents, expr.pexp_loc);
@@ -331,79 +306,76 @@ let mapper =
           switch expr.pexp_attributes {
           | [({txt: "then"}, contents)] => getExpr(contents, expr.pexp_loc)
           | _ => {
-              Ast_403.Parsetree.pexp_desc:
+              Parsetree.pexp_desc:
                 [@implicit_arity]
-                Ast_403.Parsetree.Pexp_construct(
+                Parsetree.Pexp_construct(
                   {
-                    Ast_403.Asttypes.txt: Ast_403.Longident.Lident("()"),
-                    Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                    Asttypes.txt: Longident.Lident("()"),
+                    Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                   },
                   None
                 ),
-              Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-              Ast_403.Parsetree.pexp_attributes: []
+              Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+              Parsetree.pexp_attributes: []
             }
           };
         {
-          Ast_403.Parsetree.pexp_desc:
+          Parsetree.pexp_desc:
             [@implicit_arity]
-            Ast_403.Parsetree.Pexp_sequence(
+            Parsetree.Pexp_sequence(
               {
-                Ast_403.Parsetree.pexp_desc:
+                Parsetree.pexp_desc:
                   [@implicit_arity]
-                  Ast_403.Parsetree.Pexp_apply(
+                  Parsetree.Pexp_apply(
                     {
-                      Ast_403.Parsetree.pexp_desc:
-                        Ast_403.Parsetree.Pexp_ident({
-                          Ast_403.Asttypes.txt:
+                      Parsetree.pexp_desc:
+                        Parsetree.Pexp_ident({
+                          Asttypes.txt:
                             [@implicit_arity]
-                            Ast_403.Longident.Ldot(
-                              Ast_403.Longident.Lident("Let_syntax"),
-                              "consume"
-                            ),
-                          Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                            Longident.Ldot(Longident.Lident("Let_syntax"), "consume"),
+                          Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                         }),
-                      Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                      Ast_403.Parsetree.pexp_attributes: []
+                      Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                      Parsetree.pexp_attributes: []
                     },
                     [
-                      (Ast_403.Asttypes.Nolabel, expr),
+                      ("", expr),
                       (
-                        Ast_403.Asttypes.Labelled("f"),
+                        "f",
                         {
-                          Ast_403.Parsetree.pexp_desc:
+                          Parsetree.pexp_desc:
                             [@implicit_arity]
-                            Ast_403.Parsetree.Pexp_fun(
-                              Ast_403.Asttypes.Nolabel,
+                            Parsetree.Pexp_fun(
+                              "",
                               None,
                               pat,
                               {
-                                Ast_403.Parsetree.pexp_desc:
+                                Parsetree.pexp_desc:
                                   [@implicit_arity]
-                                  Ast_403.Parsetree.Pexp_construct(
+                                  Parsetree.Pexp_construct(
                                     {
-                                      Ast_403.Asttypes.txt: Ast_403.Longident.Lident("()"),
-                                      Ast_403.Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
+                                      Asttypes.txt: Longident.Lident("()"),
+                                      Asttypes.loc: Pervasives.(^)(Ast_helper.default_loc)
                                     },
                                     None
                                   ),
-                                Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                                Ast_403.Parsetree.pexp_attributes: []
+                                Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                                Parsetree.pexp_attributes: []
                               }
                             ),
-                          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                          Ast_403.Parsetree.pexp_attributes: []
+                          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                          Parsetree.pexp_attributes: []
                         }
                       )
                     ]
                   ),
-                Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-                Ast_403.Parsetree.pexp_attributes: []
+                Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+                Parsetree.pexp_attributes: []
               },
               thenn
             ),
-          Ast_403.Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
-          Ast_403.Parsetree.pexp_attributes: []
+          Parsetree.pexp_loc: Pervasives.(^)(Ast_helper.default_loc),
+          Parsetree.pexp_attributes: []
         }
       | _ => Ast_mapper.default_mapper.expr(mapper, expr)
       }

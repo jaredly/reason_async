@@ -4,15 +4,14 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "bs-platform": "git+https://github.com/bsansouci/bsb-native.git"
+    "bs-platform": "git+https://github.com/bsansouci/bsb-native"
   },
   "devDependencies": {
-    "ppx_tools_bs": "git+https://github.com/jaredly/ppx_tools_bs.git"
   },
   "scripts": {
     "build": "bsb -make-world -backend native",
-    "postinstall": "bsb -make-world -backend native",
-    "ppx": "refmt ppx/Lib.re --print binary > pre && ppx_metaquot_403 pre post && refmt post --parse binary > ppx/Lib_ppxed.re && rm pre post",
+    "//postinstall": "bsb -make-world -backend native",
+    "ppx": "refmt ppx/Lib.re --print binary > pre && ../../tools/ppx_tools/ppx_metaquot_402.sh pre post && refmt post --parse binary > ppx/Lib_ppxed.re && rm pre post",
     "clean": "bsb -clean-world"
   },
   "bin": "./ppx_async.sh",

@@ -2,6 +2,9 @@ type either('a, 'b) =
   | Left('a)
   | Right('b);
 
+let leftForce = a => switch a { | Left(a) => a | Right(_) => failwith("Expected a left")};
+let rightForce = a => switch a { | Right(a) => a | Left(_) => failwith("Expected a right")};
+
 module type MonadThing = {
   type t('a);
   let return: 'a => t('a);
@@ -14,7 +17,18 @@ module type MonadThing = {
   /* let first: t 'a => t 'b => t (either 'a 'b); */
 };
 
-module Continuations /*: MonadThing with type t 'a = ('a => unit) => unit */ = {
+module Promise = {
+  type t('a) = Js.Promise.t('a);
+  let return = Js.Promise.resolve;
+  let map = (value, ~f) => value |> Js.Promise.then_(res => Js.Promise.resolve(f(res)));
+  let bind = (value, ~f) => value |> Js.Promise.then_(f);
+  let consume = (value, ~f) => value |> Js.Promise.then_(res => {f(res); Js.Promise.resolve(0)}) |> ignore;
+  let join2 = (a, b) => Js.Promise.all([|map(a, ~f=(r => Left(r))), map(b, ~f=(r => Right(r)))|]) |> Js.Promise.then_(items => Js.Promise.resolve((leftForce(items[0]), rightForce(items[1]))));
+};
+
+module P: MonadThing = Promise;
+
+module Continuation = {
   type t('a) = ('a => unit) => unit;
   let return = (x, fin) => fin(x);
   let map = (work, ~f as use, fin) => work((result) => fin(use(result)));
@@ -71,9 +85,11 @@ module Continuations /*: MonadThing with type t 'a = ('a => unit) => unit */ = {
   };
 };
 
-/*: MonadThing with type t ('a, 'b) = (result 'a 'b => unit) => unit */
-module NodeContinuations = {
-  type t('a, 'b) = (result('a, 'b) => unit) => unit;
+let module C: MonadThing = Continuation;
+
+module NodeContinuation = {
+  open Js.Result;
+  type t(('a, 'b)) = (Js.Result.t('a, 'b) => unit) => unit;
   let return = (x, fin) => fin(Ok(x));
   let map = (work, ~f as use, fin) => work((result) => fin(Ok(use(result))));
   let bind = (work, ~f as use, fin) => work((result) => (use(result))(fin));
@@ -86,20 +102,20 @@ module NodeContinuations = {
   let join2 = (one, two, fin) => {
     let side = ref(Neither);
     one(
-      (one) =>
+      (oneRes) =>
         switch side^ {
         | Neither =>
-          switch one {
-          | Ok(one) => side := One(one)
+          switch oneRes {
+          | Ok(oneVal) => side := One(oneVal)
           | Error(err) =>
             side := Done;
             fin(Error(err))
           }
-        | Two(two) =>
-          switch one {
-          | Ok(one) =>
+        | Two(twoVal) =>
+          switch oneRes {
+          | Ok(oneVal) =>
             side := Done;
-            fin((one, two))
+            fin(Ok((oneVal, twoVal)))
           | Error(err) => fin(Error(err))
           }
         /* not allowed to call multiple times */
@@ -121,18 +137,20 @@ module NodeContinuations = {
           switch two {
           | Ok(two) =>
             side := Done;
-            fin((one, two))
+            fin(Ok((one, two)))
           | Error(err) => fin(Error(err))
           }
         /* not allowed to call multiple times */
-        | One(_)
+        | Two(_)
         | Done => ()
         }
     )
   };
 };
 
-module Option /*: MonadThing with type t 'a = option 'a */ = {
+let module N: MonadThing = NodeContinuation;
+
+module Option = {
   type t('a) = option('a);
   let return = (x) => Some(x);
   let map = (value, ~f as use) =>
@@ -170,7 +188,9 @@ module Option /*: MonadThing with type t 'a = option 'a */ = {
     };
 };
 
-module Results = {
+module O: MonadThing = Option;
+
+module Result = {
   open Js.Result;
   let return = (x) => Ok(x);
   let map /*: t 'a 'b => f::('a => 'c) => t 'c 'b*/ = (value, ~f as use) =>
@@ -202,7 +222,7 @@ module Results = {
   let first = (one, two) =>
     switch one {
     | Ok(x) => Ok(Left(x))
-    | Error(e) =>
+    | Error(_e) =>
       switch two {
       | Ok(x) => Ok(Right(x))
       | Error(e) => Error(e) /* maybe have the error include both? */

@@ -1,5 +1,3 @@
-open Migrate_parsetree.Ast_403;
-
 
 /***
  * https://ocsigen.org/lwt/dev/api/Ppx_lwt
@@ -47,7 +45,7 @@ let getExpr = (contents, loc) =>
     }
   );
 
-let mapper =
+let mapper = _argv =>
   Parsetree.{
     ...Ast_mapper.default_mapper,
     expr: (mapper, expr) =>
